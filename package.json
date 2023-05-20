@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && nest export",
     "start": "next start",
     "codegen": "apollo client:codegen --target typescript --localSchemaFile schema.gql --outputFlat --includes \"{pages,src}/**\" --excludes \"src/generated/**\" src/generated",
     "codegen:watch": "yarn codegen --watch",
