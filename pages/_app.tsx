@@ -12,8 +12,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     <AuthProvider>
       <ApolloProvider client={client}>
         <Head>
-          <title>Home Sweet Home</title>
-          <link rel="icon" href="/favicon.ico" />
+          <title>Metis OS</title>
+          <link rel="icon" href="/metislogo.jpg" />
         </Head>
         <Component {...pageProps} />
       </ApolloProvider>

@@ -1,26 +1,35 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
+
 import Link from "next/link";
 import { Image } from "cloudinary-react";
 import ReactMapGL, { Marker, Popup, ViewState } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useLocalState } from "src/utils/useLocalState";
-import { HousesQuery_houses } from "src/generated/HousesQuery";
 import { SearchBox } from "./searchBox";
+import { RulerControl } from "mapbox-gl-controls";
+import PopUpComponent from "./PopUpComponent";
 
 interface IProps {
-  setDataBounds: (bounds: string) => void;
-  houses: HousesQuery_houses[];
   highlightedId: string | null;
 }
 
-export default function Map({ setDataBounds, houses, highlightedId }: IProps) {
-  const [selected, setSelected] = useState<HousesQuery_houses | null>(null);
-  const mapRef = useRef<ReactMapGL | null>(null);
-  const [viewport, setViewport] = useLocalState<ViewState>("viewport", {
-    latitude: 43,
-    longitude: -79,
-    zoom: 10,
+export default function Map({ highlightedId }: IProps) {
+  const [popupOpen, setPopupOpen] = useState<boolean>(false);
+  const mapRef = useRef(null);
+
+  const [viewport, setViewport] = useState<ViewState>({
+    latitude: 0,
+    longitude: 0,
+    zoom: 2,
   });
+
+  const togglePopup = () => {
+    setPopupOpen(!popupOpen);
+  };
+
+  const closePopup = () => {
+    setPopupOpen(false);
+  };
 
   return (
     <div className="text-black relative">
@@ -28,26 +37,19 @@ export default function Map({ setDataBounds, houses, highlightedId }: IProps) {
         {...viewport}
         width="100%"
         height="calc(100vh - 64px)"
-        mapboxApiAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_TOKEN}
-        onViewportChange={(nextViewport) => setViewport(nextViewport)}
-        ref={(instance) => (mapRef.current = instance)}
-        minZoom={5}
+        mapboxApiAccessToken="pk.eyJ1IjoiY2hyaXNqb2huc29ucHIiLCJhIjoiY2w2Y2UxMXZtMjZoeDNibjNobTlwNDVnbSJ9.lCf2hvyuoxjuk4wmGgvUTg"
+        onViewportChange={(nextViewport: ViewState) =>
+          setViewport(nextViewport)
+        }
         maxZoom={15}
-        mapStyle="mapbox://styles/leighhalliday/ckhjaksxg0x2v19s1ovps41ef"
+        minZoom={0}
+        mapStyle="mapbox://styles/chrisjohnsonpr/clgs594hv003k01pie798e370"
         onLoad={() => {
           if (mapRef.current) {
-            const bounds = mapRef.current.getMap().getBounds();
-            setDataBounds(JSON.stringify(bounds.toArray()));
-          }
-        }}
-        onInteractionStateChange={(extra) => {
-          if (!extra.isDragging && mapRef.current) {
-            const bounds = mapRef.current.getMap().getBounds();
-            setDataBounds(JSON.stringify(bounds.toArray()));
           }
         }}
       >
-        <div className="absolute top-0 w-full z-10 p-4">
+        <div className="absolute top-0 right-0 w-1/2 z-10 p-4">
           <SearchBox
             defaultValue=""
             onSelectAddress={(_address, latitude, longitude) => {
@@ -56,71 +58,43 @@ export default function Map({ setDataBounds, houses, highlightedId }: IProps) {
                   ...old,
                   latitude,
                   longitude,
-                  zoom: 12,
+                  zoom: 5,
                 }));
                 if (mapRef.current) {
-                  const bounds = mapRef.current.getMap().getBounds();
-                  setDataBounds(JSON.stringify(bounds.toArray()));
                 }
               }
             }}
           />
         </div>
-
-        {houses.map((house) => (
-          <Marker
-            key={house.id}
-            latitude={house.latitude}
-            longitude={house.longitude}
-            offsetLeft={-15}
-            offsetTop={-15}
-            className={highlightedId === house.id ? "marker-active" : ""}
+        <div>
+          <button
+            onClick={togglePopup}
+            style={{
+              color: "white",
+              backgroundColor: popupOpen ? "green" : "red",
+              padding: "10px 20px",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.3)",
+            }}
           >
-            <button
-              style={{ width: "30px", height: "30px", fontSize: "30px" }}
-              type="button"
-              onClick={() => setSelected(house)}
+            {popupOpen ? "Hide Conflicts" : "Show Conflicts"}
+          </button>
+
+          {popupOpen && (
+            <Popup
+              latitude={47.8487551}
+              longitude={20.6119717}
+              onClose={closePopup}
             >
-              <img
-                src={
-                  highlightedId === house.id
-                    ? "/home-color.svg"
-                    : "/home-solid.svg"
-                }
-                alt="house"
-                className="w-8"
+              <PopUpComponent
+                highlightedId={highlightedId}
+                closePopup={closePopup}
               />
-            </button>
-          </Marker>
-        ))}
-
-        {selected && (
-          <Popup
-            latitude={selected.latitude}
-            longitude={selected.longitude}
-            onClose={() => setSelected(null)}
-            closeOnClick={false}
-          >
-            <div className="text-center">
-              <h3 className="px-4">{selected.address.substr(0, 30)}</h3>
-              <Image
-                className="mx-auto my-4"
-                cloudName={process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
-                publicId={selected.publicId}
-                secure
-                dpr="auto"
-                quality="auto"
-                width={200}
-                height={Math.floor((9 / 16) * 200)}
-                crop="fill"
-                gravity="auto"
-              />
-              <Link href={`/houses/${selected.id}`}>
-                <a>View House</a>
-              </Link>
-            </div>
-          </Popup>
-        )}
+            </Popup>
+          )}
+        </div>
       </ReactMapGL>
     </div>
   );

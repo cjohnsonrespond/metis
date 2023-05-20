@@ -15,19 +15,20 @@ const Layout: FunctionComponent<IProps> = ({ main }) => {
         <div className="px-6 flex items-center justify-between h-16">
           <Link href="/">
             <a>
-              <img
-                src="/home-color.svg"
-                alt="home house"
-                className="inline w-6"
-              />
+              <img src="/metislogo.jpg" alt="Metis" className="inline w-8" />
             </a>
           </Link>
           {authenticated ? (
             <>
-              <Link href="/houses/add">
-                <a>Add House</a>
+              <Link href="/">
+                <a>METIS OS- GLOBAL CONFLICT ANALYSIS AGENT</a>
               </Link>
-              <button onClick={logout}>Logout</button>
+              <button
+                onClick={logout}
+                className=" bg-gray-500 px-4 py-2 rounded-lg text-white"
+              >
+                Logout
+              </button>
             </>
           ) : (
             <Link href="/auth">
@@ -36,6 +37,7 @@ const Layout: FunctionComponent<IProps> = ({ main }) => {
           )}
         </div>
       </nav>
+
       <main style={{ minHeight: "calc(100vh - 64px)" }}>{main}</main>
     </div>
   );
