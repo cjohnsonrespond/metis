@@ -14,6 +14,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <Head>
           <title>Metis OS</title>
           <link rel="icon" href="/metislogo.jpg" />
+          <script src="https://www.youtube.com/iframe_api" />
         </Head>
         <Component {...pageProps} />
       </ApolloProvider>
