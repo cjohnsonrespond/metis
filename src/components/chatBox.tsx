@@ -8,7 +8,7 @@ const api = axios.create({
   baseURL: OPENAI_API_URL,
   timeout: 30000,
   headers: {
-    Authorization: `Bearer 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`,
+    Authorization: `Bearer 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`,
     "Content-Type": "application/json",
   },
 });

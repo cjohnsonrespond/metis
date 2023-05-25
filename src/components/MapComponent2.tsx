@@ -140,12 +140,8 @@ const MapComponent2: React.FC<MapComponent2Props> = ({
     }
   };
 
-  return (
-    <div style={{ position: "relative", height: "400px" }}>
-      <div
-        ref={mapContainerRef}
-        style={{ position: "absolute", top: 0, bottom: 0, width: "100%" }}
-      />
+  const Toolbar: React.FC = () => {
+    return (
       <div
         style={{ position: "absolute", top: "10px", left: "10px", zIndex: 1 }}
       >
@@ -197,6 +193,15 @@ const MapComponent2: React.FC<MapComponent2Props> = ({
           </div>
         )}
       </div>
+    );
+  };
+
+  return (
+    <div style={{ position: "relative", height: "400px" }}>
+      <div
+        ref={mapContainerRef}
+        style={{ position: "absolute", top: 0, bottom: 0, width: "100%" }}
+      />
       <div className="absolute bottom-0 right-0 w-1/4 z-10 p-4">
         <SearchBox
           defaultValue=""
@@ -224,7 +229,6 @@ const MapComponent2: React.FC<MapComponent2Props> = ({
             style={{
               borderRadius: "7px",
               backgroundColor: "#172e52",
-
               boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
               cursor: "pointer",
             }}
@@ -233,6 +237,7 @@ const MapComponent2: React.FC<MapComponent2Props> = ({
           </label>
         </div>
       </div>
+      {map && <Toolbar />}
     </div>
   );
 };

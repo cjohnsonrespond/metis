@@ -1,5 +1,6 @@
 import React from "react";
 import { Card1 } from "src/components/Card1";
+import { Card2 } from "./Card2";
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -28,8 +29,12 @@ const SidebarComponent: React.FC<SidebarProps> = ({
       >
         Toggle
       </button>
-
-      <Card1 />
+      <div className="mb-4">
+        <Card1 />
+      </div>
+      <div className="mb-4">
+        <Card2 />
+      </div>
     </div>
   );
 };

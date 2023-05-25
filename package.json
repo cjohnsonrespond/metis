@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build ",
-    "start": "next start ",
+    "start": "next start -p 3001 ",
     "codegen": "apollo client:codegen --target typescript --localSchemaFile schema.gql --outputFlat --includes \"{pages,src}/**\" --excludes \"src/generated/**\" src/generated",
     "codegen:watch": "yarn codegen --watch",
     "db:init": "yarn prisma init",

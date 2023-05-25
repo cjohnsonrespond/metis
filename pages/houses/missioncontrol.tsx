@@ -1,11 +1,11 @@
+import { GetServerSideProps, NextApiRequest } from "next";
+import { loadIdToken } from "src/auth/firebaseAdmin";
 import Layout from "src/components/layout";
 import MapComponent2 from "src/components/MapComponent2";
-
-import React, { useState } from "react";
-import { useLocalState } from "src/utils/useLocalState";
 import SupabaseComponent from "src/components/SupabaseComponent";
 import ChatBox from "src/components/chatBox";
 import VideoPlayer from "src/components/VideoPlayer";
+import React, { useState } from "react";
 
 const Missioncontrol: React.FC = () => {
   const videoSrc = "https://www.youtube.com/watch?v=lmZRiDMK3OU";
@@ -51,6 +51,22 @@ const Missioncontrol: React.FC = () => {
       }
     />
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  try {
+    const uid = await loadIdToken(req as NextApiRequest);
+
+    if (!uid) {
+      res.setHeader("location", "/auth");
+      res.statusCode = 302;
+      res.end();
+    }
+  } catch (error) {
+    console.error(error);
+  }
+
+  return { props: {} };
 };
 
 export default Missioncontrol;
